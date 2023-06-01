@@ -165,6 +165,59 @@ namespace Clinics.EF.Migrations
                     b.ToTable("Doctors");
                 });
 
+            modelBuilder.Entity("Clinics.Core.Models.DoctorRating", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("DoctorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("PatientId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("RatingValue")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DoctorId");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("DoctorRatings");
+                });
+
+            modelBuilder.Entity("Clinics.Core.Models.DoctorSchedule", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("DoctorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ScheduleDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DoctorId");
+
+                    b.ToTable("DoctorSchedules");
+                });
+
             modelBuilder.Entity("Clinics.Core.Models.DrugDetail", b =>
                 {
                     b.Property<int>("id")
@@ -340,7 +393,7 @@ namespace Clinics.EF.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ClinicId")
+                    b.Property<int?>("ClinicId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Date")
@@ -708,6 +761,36 @@ namespace Clinics.EF.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Clinics.Core.Models.DoctorRating", b =>
+                {
+                    b.HasOne("Clinics.Core.Models.Doctor", "Doctor")
+                        .WithMany("DoctorRatings")
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Clinics.Core.Models.Patient", "Patient")
+                        .WithMany("DoctorRatings")
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Doctor");
+
+                    b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("Clinics.Core.Models.DoctorSchedule", b =>
+                {
+                    b.HasOne("Clinics.Core.Models.Doctor", "Doctor")
+                        .WithMany("DoctorSchedules")
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Doctor");
+                });
+
             modelBuilder.Entity("Clinics.Core.Models.DrugDetail", b =>
                 {
                     b.HasOne("Clinics.Core.Models.Prescription", "Prescription")
@@ -765,11 +848,9 @@ namespace Clinics.EF.Migrations
 
             modelBuilder.Entity("Clinics.Core.Models.PatientHistory", b =>
                 {
-                    b.HasOne("Clinics.Core.Models.Clinic", "Clinic")
+                    b.HasOne("Clinics.Core.Models.Clinic", null)
                         .WithMany("PatientHistories")
-                        .HasForeignKey("ClinicId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .HasForeignKey("ClinicId");
 
                     b.HasOne("Clinics.Core.Models.Diagnosis", "Diagnosis")
                         .WithMany("PatientHistories")
@@ -794,8 +875,6 @@ namespace Clinics.EF.Migrations
                         .HasForeignKey("SymptomId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
-
-                    b.Navigation("Clinic");
 
                     b.Navigation("Diagnosis");
 
@@ -938,6 +1017,10 @@ namespace Clinics.EF.Migrations
 
             modelBuilder.Entity("Clinics.Core.Models.Doctor", b =>
                 {
+                    b.Navigation("DoctorRatings");
+
+                    b.Navigation("DoctorSchedules");
+
                     b.Navigation("PatientHistories");
 
                     b.Navigation("Prescriptions");
@@ -959,6 +1042,8 @@ namespace Clinics.EF.Migrations
 
             modelBuilder.Entity("Clinics.Core.Models.Patient", b =>
                 {
+                    b.Navigation("DoctorRatings");
+
                     b.Navigation("MedicalRecord");
 
                     b.Navigation("PatientHistories");

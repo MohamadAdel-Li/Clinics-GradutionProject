@@ -71,17 +71,25 @@ namespace Clinics.Data
                 .HasForeignKey(p => p.PatientId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<PatientHistory>()
-                .HasOne(c => c.Clinic)
-                .WithMany(p => p.PatientHistories)
-                .HasForeignKey(c => c.ClinicId)
-                .OnDelete(DeleteBehavior.NoAction);
+          
 
             modelBuilder.Entity<PatientHistory>()
                .HasOne(s => s.Symptom)
                .WithMany(p => p.PatientHistories)
                .HasForeignKey(s => s.SymptomId)
                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<DoctorRating>()
+               .HasOne(s => s.Doctor)
+               .WithMany(p => p.DoctorRatings)
+               .HasForeignKey(s => s.DoctorId)
+               .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<DoctorRating>()
+            .HasOne(s => s.Patient)
+            .WithMany(p => p.DoctorRatings)
+            .HasForeignKey(s => s.PatientId)
+            .OnDelete(DeleteBehavior.NoAction);
 
         }
         public DbSet<Posts> Posts { get; set; }
@@ -100,7 +108,9 @@ namespace Clinics.Data
         public DbSet<Immunization> Immunizations  { get; set; }
         public DbSet<PatientHistory> PatientHistories { get; set; }
         public DbSet<MedicalRecord> MedicalRecords { get; set; }
-
+        public DbSet<DoctorSchedule> DoctorSchedules { get; set; }
         public DbSet<DrugDetail> DrugDetails { get; set; }
+        public DbSet<DoctorRating> DoctorRatings { get; set; }
+
     }
 }

@@ -22,10 +22,7 @@ namespace Clinics.Core.Models
 
         public Patient Patient { get; set; }
 
-
-        [ForeignKey("Clinic")]
-        public int ClinicId { get; set; }
-        public Clinic Clinic { get; set; }     
+        
 
         [ForeignKey("Symptom")]
         public int SymptomId { get; set; }

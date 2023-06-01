@@ -20,10 +20,10 @@ namespace Clinics.Api.Controllers
 
         }
 
-        [HttpGet("id")]
-        public async Task<ActionResult<List<PrescriptionWithDrugDetailsDto>>> GetPrescription(string id)
+        [HttpGet("patient/{id}/prescriptions")]
+        public async Task<ActionResult<List<PrescriptionWithDrugDetailsDto>>> GetPrescription(string id, DateTime date)
         {
-            var data = await _unitOfWork.Prescription.GetPrescriptionsByPatientId(id);
+            var data = await _unitOfWork.Prescription.GetPrescriptionsByPatientId(id,date);
             if (data == null)
             {
                 return NotFound();

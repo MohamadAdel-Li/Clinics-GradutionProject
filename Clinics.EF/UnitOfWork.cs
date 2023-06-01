@@ -40,7 +40,9 @@ namespace Clinics.EF
         public IReservation Reservation { get; private set; }
         public IMedicalRecord MedicalRecord { get; private set; }
         public IPatientHistory PatientHistory { get; private set; }
-        public IPrescription Prescription { get; private set; } 
+        public IPrescription Prescription { get; private set; }
+        public IDoctorSchedule DoctorSchedule { get; private set; }
+        public IDoctorRating DoctorRating { get; private set; }
         public UnitOfWork(ClinicContext context, UserManager<ApplicationUser> userManager, IConfiguration configuration)
         {
             _context = context;
@@ -61,7 +63,8 @@ namespace Clinics.EF
             Reservation = new ReservationRepository(_context);
             MedicalRecord = new MedicalRecordRepository(_context);
             Prescription = new PrescriptionRepository(_context);
-
+            DoctorSchedule = new DoctorScheduleRepositrory(_context);
+            DoctorRating = new DoctorRatingRepository(_context);
         }
 
         public async Task Complete()

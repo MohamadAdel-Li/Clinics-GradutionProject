@@ -11,6 +11,6 @@ namespace Clinics.Core.Interfaces
     public interface IPatientHistory : IGenericRepository<PatientHistory>
     {
         Task<PatientHistoryDTO> GetPatientHistory(string id);
-
+        Task<int> AddPatientHistoryAsync(string doctorId, string patientId, string symptomName, string diagnosisName, DateTime date);
     }
 }

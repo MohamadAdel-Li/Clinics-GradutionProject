@@ -22,12 +22,14 @@ namespace Clinics.EF.Repositories
 
         public async Task<PrescriptionWithDrugDetailsDto> AddPrescription(PrescriptionWithDrugDetailsDto prescriptionDto)
         {
+           
+            DateTime utcDate =  prescriptionDto.Prescription.Date.ToUniversalTime();
             var prescription = new Prescription
             {
                 DoctorId = prescriptionDto.Prescription.DoctorId,
                 PatientId = prescriptionDto.Prescription.PatientId,
                
-                Date = prescriptionDto.Prescription.Date,
+                Date = utcDate,
                 Notes = prescriptionDto.Prescription.Notes,
             };
 
@@ -53,11 +55,11 @@ namespace Clinics.EF.Repositories
 
         }
 
-        public async Task<List<PrescriptionWithDrugDetailsDto>> GetPrescriptionsByPatientId(string patientId)
+        public async Task<List<PrescriptionWithDrugDetailsDto>> GetPrescriptionsByPatientId(string patientId, DateTime date)
         {
             var prescriptions = await _context.Prescriptions
                 .Include(p => p.DrugDetails)
-                .Where(p => p.PatientId == patientId)
+                .Where(p => p.PatientId == patientId && p.Date.Date == date.Date)
                 .ToListAsync();
 
             var prescriptionDtos = new List<PrescriptionWithDrugDetailsDto>();

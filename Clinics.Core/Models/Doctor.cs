@@ -29,5 +29,7 @@ namespace Clinics.Core.Models
         public ICollection<Prescription> Prescriptions { get; set; }
         public ICollection<Reservation> Reservations  { get; set; }
         public ICollection<PatientHistory> PatientHistories { get; set; }
+        public ICollection<DoctorSchedule> DoctorSchedules  { get; set; }
+        public ICollection<DoctorRating> DoctorRatings { get; set; }
     }
 }

@@ -26,6 +26,7 @@ namespace Clinics.Core.Models
 
         public ICollection<Reservation>? Reservations { get; set; }
         public ICollection<PatientHistory>? PatientHistories { get; set; }
+        public ICollection<DoctorRating> DoctorRatings { get; set; }
 
     }
 }

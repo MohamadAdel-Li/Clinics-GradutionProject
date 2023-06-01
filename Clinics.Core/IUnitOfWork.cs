@@ -24,9 +24,9 @@ namespace Clinics.Core
         IPatientHistory PatientHistory { get; }
         IReservation Reservation { get; }
         IMedicalRecord MedicalRecord { get; }
-
+        IDoctorSchedule DoctorSchedule { get; }
         IPrescription Prescription { get; }
-
+        IDoctorRating DoctorRating { get; }
         Task Complete();
     }
 }

@@ -26,7 +26,6 @@ namespace Clinics.EF.Repositories
             var patientHistories = await _context.PatientHistories
                 .Include(d => d.Doctor).ThenInclude(u => u.User)
                 .Include(p => p.Patient).ThenInclude(u => u.User)
-                .Include(c => c.Clinic)
                 .Include(d => d.Diagnosis)
                 .Include(s => s.Symptom)
                 .Where(ph => ph.PatientId == id)
@@ -39,8 +38,8 @@ namespace Clinics.EF.Repositories
                 .Include(pr => pr.MedicalRecord)
                 .ThenInclude(m => m.Immunizations)
                 .FirstOrDefaultAsync(p => p.UserId == id);
-            
-            if ( patientHistories == null)
+
+            if (patientHistories == null)
             {
                 return null;
             };
@@ -84,5 +83,34 @@ namespace Clinics.EF.Repositories
             }
             return patientDto;
         }
+
+        public async Task<int> AddPatientHistoryAsync(string doctorId, string patientId, string symptomName, string diagnosisName, DateTime date)
+        {
+            var symptom = new Symptom { Name = symptomName };
+            var diagnosis = new Diagnosis { Name = diagnosisName };
+
+            // Add symptom and diagnosis to their respective tables
+            _context.Symptoms.Add(symptom);
+            _context.Diagnoses.Add(diagnosis);
+            await _context.SaveChangesAsync();
+
+            // Create new patient history record
+            var patientHistory = new PatientHistory
+            {
+                DoctorId = doctorId,
+                PatientId = patientId,               
+                SymptomId = symptom.Id,
+                DiagnosisId = diagnosis.Id,
+                Date = date
+            };
+
+            // Add new patient history to the database
+            _context.PatientHistories.Add(patientHistory);
+            await _context.SaveChangesAsync();
+
+            return patientHistory.Id;
+        }
+
+
     }
 }
