@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Identity;
 using Clinics.Core.Models.Authentication;
 using Microsoft.OpenApi.Models;
+using Hangfire;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -106,8 +107,16 @@ builder.Services.AddCors(options =>
     });
 });
 
+//hangFiiiiiiiiiiire
+builder.Services.AddHangfire(x =>x.UseSqlServerStorage("Server=DESKTOP-5SUCKG0;Initial Catalog=ClinicDB;Trusted_Connection=True;TrustServerCertificate=true;MultipleActiveResultSets=true;user ID =CommanderAPI;Password=SQL1234"));
+builder.Services.AddHangfireServer();
+
+
+
 
 var app = builder.Build();
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -130,7 +139,8 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
- 
+
+app.UseHangfireDashboard("/dashboard");
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapHub<NotificationHub>("/notificationHub");

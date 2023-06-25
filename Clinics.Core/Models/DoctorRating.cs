@@ -15,8 +15,8 @@ namespace Clinics.Core.Models
         public Doctor Doctor { get; set; }
         public int RatingValue { get; set; }
         [ForeignKey("Patient")]
-        public string PatientId { get; set; }
-        public Patient Patient { get; set; }
+        public string? PatientId { get; set; }
+        public Patient? Patient { get; set; }
         // Add other properties specific to a rating
     }
 

@@ -21,10 +21,10 @@ namespace Clinics.Core.Models
         public Patient Patient { get; set; }
 
 
-        [ForeignKey("Clinic")]
-        public int ClinicId { get; set; }
+        //[ForeignKey("Clinic")]
+        //public int ClinicId { get; set; }
 
-        public Clinic Clinic  { get; set; }
+        //public Clinic Clinic  { get; set; }
 
         public DateTime Date { get; set; }
         public bool type { get; set; }

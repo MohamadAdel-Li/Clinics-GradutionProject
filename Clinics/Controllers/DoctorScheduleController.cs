@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Clinics.Core;
+using Clinics.Core.DTOs;
+using Clinics.Core.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,6 +34,25 @@ namespace Clinics.Api.Controllers
             return Ok(schedules);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> AddDoctorSchedules(PostDoctorScheduleDTO postDoctorScheduleDTO)
+        {
+            var doctorSchedule = _mapper.Map<DoctorSchedule>(postDoctorScheduleDTO);
+
+            await _unitOfWork.DoctorSchedule.Add(doctorSchedule);
+            await _unitOfWork.Complete();
+
+            if (doctorSchedule.Id > 0)
+            {
+                // Data saved successfully
+                return Ok(doctorSchedule);
+            }
+            else
+            {
+                // Failed to save data
+                return StatusCode(500); // You can use any appropriate status code here
+            }
+        }
 
     }
 }

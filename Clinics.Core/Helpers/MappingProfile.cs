@@ -15,8 +15,8 @@ namespace Clinics.Core.Helpers
         public MappingProfile()
         {
             // src -> distnation
-            CreateMap<Posts,postReadDto>();
-            CreateMap<postCreateDto,Posts>();
+            CreateMap<Posts, postReadDto>();
+            CreateMap<postCreateDto, Posts>();
             CreateMap<postReadDto, Posts>();
             CreateMap<Recipe, RecipeReadDto>();
             CreateMap<RecipeReadDto, Recipe>();
@@ -24,7 +24,7 @@ namespace Clinics.Core.Helpers
             CreateMap<IngredientDto, Ingredient>();
 
             CreateMap<Clinic, ClinicDTO>();
-            
+
             CreateMap<ClinicDTO, Clinic>();
 
             CreateMap<SymptomDTO, Symptom>();
@@ -33,8 +33,11 @@ namespace Clinics.Core.Helpers
             CreateMap<DiagnosisDTO, Diagnosis>();
             CreateMap<Diagnosis, DiagnosisDTO>();
 
+            CreateMap<PostDoctorScheduleDTO, DoctorSchedule>();
+            CreateMap<DoctorSchedule, PostDoctorScheduleDTO>();
+
 
         }
-        
+
     }
 }

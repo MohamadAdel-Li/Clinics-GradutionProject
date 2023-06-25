@@ -57,12 +57,17 @@ namespace Clinics.EF.Repositories
         {
             var doctorSchedules = await _context.DoctorSchedules
                 .Include(d => d.Doctor).ThenInclude(u => u.User)
+                .Include(d => d.Doctor).ThenInclude(s => s.Specialization)
+                .Include(d => d.Doctor).ThenInclude(c => c.Clinic)
                 .Where(d => d.Doctor.SpecializationId == SpecializationId)
                 .GroupBy(d => new { d.DoctorId, d.Doctor.User.FirstName, d.Doctor.User.LastName })
                 .Select(g => new DoctorScheduleDTO
                 {
                     DoctorId = g.Key.DoctorId,
                     DoctorName = g.Key.FirstName + " " + g.Key.LastName,
+                    DoctorSpecialization = g.First().Doctor.Specialization.Name, // Access the specialization name
+                    DoctorLocation = g.First().Doctor.Clinic.Location, // Access the clinic location
+                    DoctorQualification = g.First().Doctor.Qualification,
                     Dates = g.GroupBy(d => d.ScheduleDateTime.Date)
                         .Select(gd => new DoctorScheduleDateDTO
                         {
@@ -84,7 +89,7 @@ namespace Clinics.EF.Repositories
                 .Select(g => new
                 {
                     DoctorId = g.Key,
-                    AverageRating = g.Average(r => r.RatingValue)
+                    AverageRating = g.Average(r => r.RatingValue) 
                 })
                 .OrderByDescending(r => r.AverageRating)
                 .Take(pageSize)
@@ -95,7 +100,7 @@ namespace Clinics.EF.Repositories
                 tr => tr.DoctorId,
                 (ds, tr) =>
                 {
-                    ds.AverageRating = tr.AverageRating;
+                    ds.AverageRating = tr?.AverageRating ?? 3.0 ;
                     return ds;
                 })
                 .OrderByDescending(ds => ds.AverageRating)

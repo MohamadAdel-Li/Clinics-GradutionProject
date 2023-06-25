@@ -153,6 +153,9 @@ namespace Clinics.EF.Migrations
                     b.Property<int>("ClinicId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Qualification")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("SpecializationId")
                         .HasColumnType("int");
 
@@ -178,7 +181,6 @@ namespace Clinics.EF.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("PatientId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("RatingValue")
@@ -532,9 +534,6 @@ namespace Clinics.EF.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ClinicId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
@@ -553,8 +552,6 @@ namespace Clinics.EF.Migrations
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ClinicId");
 
                     b.HasIndex("DoctorId");
 
@@ -772,8 +769,7 @@ namespace Clinics.EF.Migrations
                     b.HasOne("Clinics.Core.Models.Patient", "Patient")
                         .WithMany("DoctorRatings")
                         .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Doctor");
 
@@ -925,12 +921,6 @@ namespace Clinics.EF.Migrations
 
             modelBuilder.Entity("Clinics.Core.Models.Reservation", b =>
                 {
-                    b.HasOne("Clinics.Core.Models.Clinic", "Clinic")
-                        .WithMany("Reservations")
-                        .HasForeignKey("ClinicId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Clinics.Core.Models.Doctor", "Doctor")
                         .WithMany("Reservations")
                         .HasForeignKey("DoctorId")
@@ -942,8 +932,6 @@ namespace Clinics.EF.Migrations
                         .HasForeignKey("PatientId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
-
-                    b.Navigation("Clinic");
 
                     b.Navigation("Doctor");
 
@@ -1006,8 +994,6 @@ namespace Clinics.EF.Migrations
                     b.Navigation("Doctors");
 
                     b.Navigation("PatientHistories");
-
-                    b.Navigation("Reservations");
                 });
 
             modelBuilder.Entity("Clinics.Core.Models.Diagnosis", b =>

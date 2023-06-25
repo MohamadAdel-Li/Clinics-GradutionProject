@@ -56,7 +56,18 @@ namespace Clinics.Api.Controllers
             if (postDoctorDTO == null)
                 return BadRequest();
             await _unitOfWork.Doctor.AddDoctor(postDoctorDTO);
+
+            // Add a default rating for the doctor
+            var doctorRating = new DoctorRating
+            {
+                DoctorId = postDoctorDTO.UserId,
+                RatingValue = 5,
+                PatientId = null
+            };
+
+            await _unitOfWork.DoctorRating.Add(doctorRating);
             await _unitOfWork.Complete();
+
             return CreatedAtAction(nameof(GetDoctorbyId), new { id = postDoctorDTO.UserId }, postDoctorDTO);
         }
 

@@ -20,7 +20,7 @@ namespace Clinics.Core.Models
         public decimal longitude { get; set; }
 
         public ICollection<Doctor> Doctors { get; set; }
-        public ICollection<Reservation> Reservations { get; set; }
+        //public ICollection<Reservation> Reservations { get; set; }
         public ICollection<PatientHistory> PatientHistories { get; set; }
     }
 }

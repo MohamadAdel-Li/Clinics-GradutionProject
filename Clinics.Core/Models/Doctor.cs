@@ -14,6 +14,7 @@ namespace Clinics.Core.Models
         [Key, ForeignKey("User")]
         public string UserId { get; set; }
 
+        public string? Qualification { get; set; }
         public ApplicationUser User { get; set; }
 
         [ForeignKey("Specialization")]

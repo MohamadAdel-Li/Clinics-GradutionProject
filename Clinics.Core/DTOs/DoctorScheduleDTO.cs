@@ -10,8 +10,12 @@ namespace Clinics.Core.DTOs
     {
         public string DoctorId { get; set; }
         public string DoctorName { get; set; }
+        public string? DoctorLocation { get; set; }
+        public string? DoctorSpecialization { get; set; }
+        public string? DoctorQualification { get; set; }
+
         public List<DoctorScheduleDateDTO> Dates { get; set; }
-        public double AverageRating { get; set; } // Add AverageRating property
+        public double? AverageRating { get; set; } // Add AverageRating property
     }
 
     public class DoctorScheduleDateDTO

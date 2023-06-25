@@ -3,6 +3,7 @@ using Clinics.Core;
 using Clinics.Core.DTOs;
 using Clinics.Core.Models;
 using Clinics.Data;
+using Hangfire;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -17,12 +18,12 @@ namespace Clinics.Api.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IHubContext<NotificationHub> _hubContext;
-        
-        public ReservationController(IUnitOfWork unitOfWork, IMapper mapper, IHubContext<NotificationHub> hubContext) 
+
+        public ReservationController(IUnitOfWork unitOfWork, IMapper mapper, IHubContext<NotificationHub> hubContext)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
-            _hubContext = hubContext;           
+            _hubContext = hubContext;
         }
 
         [HttpGet]
@@ -53,13 +54,23 @@ namespace Clinics.Api.Controllers
 
             DateTime utcDate = postReservationDTO.Date.ToUniversalTime();
             DateTime notificationDate = utcDate.AddMinutes(-1);
+            // Bad practice
+            // await Task.Delay(notificationDate - DateTime.UtcNow);
+            // Schedule the notification using Hangfire
+            
 
-            await Task.Delay(notificationDate - DateTime.UtcNow);
-            await _hubContext.Clients.All.SendAsync("ReceiveNotification", $"The meeting with ID {postReservationDTO.PatientID} will start on {utcDate.ToString("yyyy-MM-dd hh:mm:ss tt")}.", postReservationDTO.PatientID, postReservationDTO.DoctorId);
-
+            BackgroundJob.Schedule(() => SendNotification(postReservationDTO), notificationDate - DateTime.UtcNow);
 
 
             return CreatedAtAction(nameof(GetReservation), new { id = postReservationDTO.id }, postReservationDTO);
+        }
+        [HttpPost("Notification-Hangfire")]
+        public async Task<IActionResult> SendNotification(PostReservationDTO postReservationDTO)
+        {
+            Console.WriteLine("is it working ??????");
+            // Perform the notification logic here
+            await _hubContext.Clients.All.SendAsync("ReceiveNotification", $"The meeting with ID {postReservationDTO.PatientID} will start on {postReservationDTO.Date.ToString("yyyy-MM-dd hh:mm:ss tt")}.", postReservationDTO.PatientID, postReservationDTO.DoctorId);
+            return Ok();
         }
     }
 }

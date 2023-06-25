@@ -25,8 +25,7 @@ namespace Clinics.EF.Repositories
         {
             var data = await _context.Reservations
                 .Include(d => d.Doctor).ThenInclude(u => u.User)
-                .Include(p => p.Patient).ThenInclude(u => u.User)                
-                .Include(c => c.Clinic)
+                .Include(p => p.Patient).ThenInclude(u => u.User)                                
                 .Where(r => r.PatientId == id || r.DoctorId == id)
                 .ToListAsync();
 
@@ -40,8 +39,7 @@ namespace Clinics.EF.Repositories
             {
                 id = r.Id,
                 DoctorName = r.Doctor.User.FirstName + " " + r.Doctor.User.LastName,
-                PatientName = r.Patient.User.FirstName + " " + r.Patient.User.LastName,
-                ClinicName = r.Clinic.Name,
+                PatientName = r.Patient.User.FirstName + " " + r.Patient.User.LastName,             
                 Date = r.Date.AddHours(2),
                 Type = r.type,
                 Online = r.Online
@@ -54,8 +52,7 @@ namespace Clinics.EF.Repositories
         {
             var data = await _context.Reservations
                 .Include(d => d.Doctor).ThenInclude(u => u.User)
-                .Include(p => p.Patient).ThenInclude(u => u.User)
-                .Include(c => c.Clinic)
+                .Include(p => p.Patient).ThenInclude(u => u.User)                
                 .ToListAsync();
 
             if (data == null)
@@ -66,8 +63,7 @@ namespace Clinics.EF.Repositories
             {
                 id = r.Id,
                 DoctorName = r.Doctor.User.FirstName + " " + r.Doctor.User.LastName,
-                PatientName = r.Patient.User.FirstName + " " + r.Patient.User.LastName,
-                ClinicName = r.Clinic.Name,
+                PatientName = r.Patient.User.FirstName + " " + r.Patient.User.LastName,                
                 Date = r.Date,
                 Type = r.type,
                 Online = r.Online
@@ -82,8 +78,7 @@ namespace Clinics.EF.Repositories
             var reservation = new Reservation
             {
                 DoctorId = postReservationDTO.DoctorId,
-                PatientId = postReservationDTO.PatientID,
-                ClinicId = postReservationDTO.ClinicID,
+                PatientId = postReservationDTO.PatientID,                
                 Date = utcDate,
                 type = postReservationDTO.Type,
                 Online = postReservationDTO.Online,
