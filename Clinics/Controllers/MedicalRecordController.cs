@@ -23,9 +23,9 @@ namespace Clinics.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<MedicalRecord>> GetMedicalRecordbyId(int id)
+        public async Task<ActionResult<MedicalRecord>> GetMedicalRecordbyId(string id)
         {
-            var data = await _unitOfWork.MedicalRecord.GetById(id);
+            var data = await _unitOfWork.MedicalRecord.GetMedicalRecord(id);
             if (data == null)
                 return NotFound();
             return Ok(data);

@@ -79,7 +79,7 @@ namespace Clinics.Api.Controllers
             var doctor = await _unitOfWork.Doctor.GetById(id);
             if (doctor == null)
                 return NotFound();
-            _unitOfWork.Doctor.Delete(doctor);
+            await _unitOfWork.Doctor.Delete(doctor);
             await _unitOfWork.Complete();
             return NoContent();
         }

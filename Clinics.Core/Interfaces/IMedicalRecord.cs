@@ -10,8 +10,9 @@ namespace Clinics.Core.Interfaces
 {
     public interface IMedicalRecord : IGenericRepository<MedicalRecord>
     {
-        
+
         public Task<PostMedicalRecordDTO> AddMedicalRecordAsync(PostMedicalRecordDTO postMedicalRecordDTO);
+        public Task<MedicalRecord> GetMedicalRecord(string userId);
     }
 
 }

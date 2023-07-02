@@ -103,5 +103,17 @@ namespace Clinics.EF.Repositories
 
             return postMedicalRecordDTO;
         }
+
+        public async Task<MedicalRecord> GetMedicalRecord(string userId)
+        {
+            var record = await _context.MedicalRecords.FirstOrDefaultAsync(u => u.PatientId == userId);
+
+            if (record == null)
+            {
+                return null;
+            }
+
+            return record;
+        }
     }
 }

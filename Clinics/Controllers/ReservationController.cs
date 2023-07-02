@@ -2,12 +2,16 @@
 using Clinics.Core;
 using Clinics.Core.DTOs;
 using Clinics.Core.Models;
+using Clinics.Core.Models.Authentication;
 using Clinics.Data;
 using Hangfire;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Mail;
+using System.Net;
 
 namespace Clinics.Api.Controllers
 {
@@ -15,15 +19,17 @@ namespace Clinics.Api.Controllers
     [ApiController]
     public class ReservationController : ControllerBase
     {
+        private readonly UserManager<ApplicationUser> _userManger;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IHubContext<NotificationHub> _hubContext;
 
-        public ReservationController(IUnitOfWork unitOfWork, IMapper mapper, IHubContext<NotificationHub> hubContext)
+        public ReservationController(IUnitOfWork unitOfWork, IMapper mapper, IHubContext<NotificationHub> hubContext, UserManager<ApplicationUser> userManager)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _hubContext = hubContext;
+            _userManger = userManager;
         }
 
         [HttpGet]
@@ -57,13 +63,53 @@ namespace Clinics.Api.Controllers
             // Bad practice
             // await Task.Delay(notificationDate - DateTime.UtcNow);
             // Schedule the notification using Hangfire
-            
+            var patient = await _userManger.FindByIdAsync(postReservationDTO.PatientID);
+            string patientEmail = patient.Email;
 
+            var doctor = await _userManger.FindByIdAsync(postReservationDTO.DoctorId);
+            string doctorEmail = doctor.Email;
+
+            string recipientEmail = patientEmail; // Replace with the recipient's email address
+            string subject = "Reservation";
+            string body = "Your email reservation is booked";
+            Console.WriteLine($"******Loooooooooooooooook here   {patientEmail}  **********");
+            SendEmail(recipientEmail, subject, body);
+            // postReservationDTO.DoctorId
             BackgroundJob.Schedule(() => SendNotification(postReservationDTO), notificationDate - DateTime.UtcNow);
 
 
             return CreatedAtAction(nameof(GetReservation), new { id = postReservationDTO.id }, postReservationDTO);
         }
+
+
+
+        private void SendEmail(string recipientEmail, string subject, string body)
+        {
+            string senderEmail = "m01093777329@gmail.com"; // Replace with your Gmail address
+            string senderPassword = "liotqidsipvktbec"; // Replace with your Gmail password
+
+            var smtpClient = new SmtpClient("smtp.gmail.com", 587)
+            {
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential(senderEmail, senderPassword),
+                EnableSsl = true
+            };
+
+            MailMessage mailMessage = new MailMessage(senderEmail, recipientEmail, subject, body);
+
+            try
+            {
+                smtpClient.Send(mailMessage);
+                Console.WriteLine("Email sent successfully!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Failed to send email: " + ex.Message);
+            }
+        }
+
+
+
         [HttpPost("Notification-Hangfire")]
         public async Task<IActionResult> SendNotification(PostReservationDTO postReservationDTO)
         {

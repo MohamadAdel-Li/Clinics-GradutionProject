@@ -36,6 +36,9 @@ namespace Clinics.Core.Helpers
             CreateMap<PostDoctorScheduleDTO, DoctorSchedule>();
             CreateMap<DoctorSchedule, PostDoctorScheduleDTO>();
 
+            CreateMap<MedicalRecord, PostMedicalRecordDTO>();
+            CreateMap<PostMedicalRecordDTO,MedicalRecord>();
+
 
         }
 
